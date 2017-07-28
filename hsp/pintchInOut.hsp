@@ -2,9 +2,9 @@
 #include "hspmath.as"
 
 doublePointFlag = 0
-wsize = absf(ginfo(12))*2
-hsize = absf(ginfo(13))*2
-;buffer 2,wsize,hsize
+wsize = absf(ginfo(12))
+hsize = absf(ginfo(13))
+
 buffer 1
 //1:元のjpg画像
 celload "map.png",1
@@ -19,9 +19,17 @@ moveFirstX = 0.0
 moveFirstY = 0.0
 prevCenterX = 0.0
 prevCenterY = 0.0
-moveFirstTheta = 0.0
+
+prevDoublePoint = 0.0
+doublePointDist = 1.0
 
 systemRate = 1.0
+
+min = 0.3
+max = 2.5
+
+i = 0
+
 repeat
 	redraw 0
 	pos 0,0	
@@ -31,30 +39,31 @@ repeat
 	repeat num
 		id = touchid(cnt)
 		mtinfo touch,id
-//		mes "T:"+id+"("+touch(1)+","+touch(2)+") "+touch(3)
 	loop
 	if num=1:gosub*singlePoint:else:singlePointFlag = 0
 	if num=2:gosub*doublePoint:else:doublePointFlag = 0
-
-//倍率を合わせる
-	;pos 0,0
-	;gzoom wsize,hsize,1,X-((wsize/rate)/2),Y-((hsize/rate)/2),(wsize/rate),(hsize/rate),0
-
 	
+	if doublePointFlag = 0 and doublePointDist != 1.0{
+		tmp = 0.0
+		if(doublePointDist <= 1.0){
+			doublePointDist += 0.1
+			tmp = -0.1
+//			title ""+ doublePointDist +""
+		}else{
+			doublePointDist -= 0.1
+			tmp = 0.1
+		}
+		if 0.95< absf(doublePointDist) && absf(doublePointDist) < 1.05 {
+			doublePointDist = 1.0
+		}
+		rate += tmp 
+		rate = limitf(rate,min,max)
+	}
 
-//回転をする
+	pos 0,0
+	reverseRate = 1.0/rate
+	gzoom wsize,hsize,1,X-wsize/2.0*reverseRate,Y-hsize/2.0*reverseRate,wsize*reverseRate,hsize*reverseRate
 	
-	title "x:"+x+",y:"+y+""
-	gmode 0,(wsize/rate)*2*systemRate,(hsize/rate)*2*systemRate//コピー元の大きさ
-	pos ((wsize/rate)*systemRate),((hsize/rate)*systemRate)
-	grotate 1,X-((wsize/rate)*systemRate),Y-((hsize/rate)*systemRate),0.0,wsize*2*systemRate,hsize*2*systemRate//コピー先の大きさ
-	boxf ((wsize/rate)*systemRate)-5,((hsize/rate)*systemRate)-5,((wsize/rate)*systemRate)+5,((hsize/rate)*systemRate)+5
-
-	/*
-	gmode 0,(wsize/rate),(hsize/rate)//コピー元の大きさ
-	pos X,Y
-	grotate 1,X-((wsize/rate)/2),Y-((hsize/rate)/2),theta,wsize,hsize//コピー先の大きさ
-	*/
 	redraw 1
 	await 1000/60
 
@@ -75,8 +84,8 @@ stop
 		prevY = Y
 	}else{
 		//比率に合わせて移動量も
-		X = prevX + ( _X - moveFirstX )//rate
-		Y = prevY + ( _Y - moveFirstY )//rate
+		X = prevX - ( _X - moveFirstX )
+		Y = prevY - ( _Y - moveFirstY )
 	}
 return
 
@@ -97,20 +106,17 @@ return
 	centerX = absf( touch0(1) + touch1(1) )/2
 	centerY = absf( touch0(2) + touch1(2) )/2
 
-	
-
 	if doublePointFlag == 0 {
-		doublePointFlag = distance2(point0,point1)
+		doublePointFlag = 1
+		prevDoublePointDist = distance2(point0,point1)
 		prevRate = rate
 		prevCenterX = centerX
 		prevCenterY = centerY
-		moveFirstTheta = atan(touch0(1) - touch1(1),touch0(2) - touch1(2))
-		prevTheta = theta
 	}else{
-		rate = limitf(absf( prevRate * distance2(point0,point1)/doublePointFlag ),0.5,2.0)
-		centerX += prevCenterX 
+		doublePointDist = distance2(point0,point1) / prevDoublePointDist
+		rate = limitf(absf( prevRate * distance2(point0,point1)/prevDoublePointDist ),min,max)
+		centerX += prevCenterX
 		centerY += prevCenterY
-		theta = moveFirstTheta - atan(touch0(1) - touch1(1),touch0(2) - touch1(2)) + prevTheta
 	}
 
 return

@@ -1,19 +1,25 @@
 w = 360
 h = 400
-color 0,0,0
 screen 0,640,480
+color 0,0,0
 picload "fire.jpg"
 
 screen 1,640,480
 
+rate = 0.001
 
 repeat
 	redraw 0
 	color 0,0,0
 	boxf
-;	pos mousex-w/2,mousey-h/2
-;	pos 0,0
-;	gzoom 640,480,0,mx-(500),my-500,1000,1000
+	rate += 0.01
+	gsel 0
+	mx = absf(mousex)
+	my =  absf(mousey)
+	gsel 1
+	pos 0,0
+	gzoom 640,480,0,mx-(640.0/2.0)*rate,my-480.0/2.0*rate,640.0*rate,480.0*rate
+	
 
 	stick key,15
 	if key&1:mx-=10
@@ -21,13 +27,14 @@ repeat
 	if key&4:mx+=10
 	if key&8:my+=10
 
+/*
 	gmode 0,640,480//コピー元の大きさ
 	pos 640/2,480/2
 	grotate 0,mx-640/2,my-480/2,m_pi*cnt/314,640,480//コピー先の大きさ
 	color 255,255,255
 	boxf mx-5,my-5,mx+5,my+5
 	boxf 640/2-5,480/2-5,640/2+5,480/2+5
-
+*/
 	
 	gsel 0
 
