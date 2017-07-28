@@ -84,8 +84,8 @@ stop
 		prevY = Y
 	}else{
 		//”ä—¦‚É‡‚í‚¹‚ÄˆÚ“®—Ê‚à
-		X = prevX - ( _X - moveFirstX )
-		Y = prevY - ( _Y - moveFirstY )
+		X = prevX - ( _X - moveFirstX )/rate
+		Y = prevY - ( _Y - moveFirstY )/rate
 	}
 return
 
