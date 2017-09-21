@@ -6,6 +6,7 @@ Google社が提供している地図情報提供サービスの[Google マップ
 [Hot Soup Processor - Ver.3.4](http://hsp.tv/)
 ## 起動
 hspをインストールし、pintchInOut.hspを開いてF5で起動できる。
+
 ![screenshot](screenshot.png)
 
-なお、hspはファイルをShift-JISで保存しているためGithub上では文字化けを起こす。
+なお、hspはファイルをShift-JISで保存しているため文字化けを場合がある。
