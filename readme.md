@@ -5,6 +5,8 @@ Google社が提供している地図情報提供サービスの[Google マップ
 ## 言語
 [Hot Soup Processor - Ver.3.4](http://hsp.tv/)
 ## 起動
+マルチタッチ可能なWindowsPC(Surfaceなど)のみで起動確認済。
+
 hspをインストールし、pintchInOut.hspを開いてF5で起動できる。
 
 ![screenshot](screenshot.png)
